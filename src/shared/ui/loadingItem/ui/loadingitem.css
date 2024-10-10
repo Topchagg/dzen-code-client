@@ -1,0 +1,21 @@
+.loading-item-wrapper {
+    z-index: 3;
+    height: 100vh; 
+    width: 100vw; 
+    top: 0;
+    left: 0;
+    background-color: lightgray;
+    position: fixed; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.8;
+}
+
+.loading-item {
+    width: 75px;
+    height: 75px;
+    border-radius: 50%; 
+    border-top: solid darkgray 3px;
+    border-right: solid darkgray;
+}
