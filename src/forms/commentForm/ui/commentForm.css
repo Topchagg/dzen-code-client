@@ -7,7 +7,6 @@
 .image-field {
     width: 50px;
     height: 50px;
-    margin-left: -20px;
 }
 
 .input-field-wrapper {
@@ -25,3 +24,14 @@
     justify-content: space-around;
     padding-bottom: 10px;
 }
+
+@media (max-width: 768px) {
+    .image-field {
+      width: 30px;
+      height: 30px;
+      margin: 0;
+    }
+    .fields-wrapper {
+        border: solid red;
+    }
+  }

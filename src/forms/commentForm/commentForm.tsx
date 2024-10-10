@@ -108,7 +108,7 @@ const CommentForm = () => {
             message={`Вы выбрали: ${form['file'].value?.name}`}
             callBack={handleOnDeleteFile}
             />}
-            <ReactiveForm setObject={form} setFunc={setForm} className="comment-form"> 
+            <ReactiveForm setObject={form} setFunc={setForm}> 
                 <div className="fields-wrapper">
                     <div className="input-field-wrapper">
                     {answerTo && username && <div className="is-answer">Ви відповідаєте {username}  <span onClick={setNullAnswer} className="is-clickable">X</span></div> }

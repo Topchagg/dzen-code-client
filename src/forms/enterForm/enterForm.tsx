@@ -38,6 +38,7 @@ const EnterForm = () => {
     }, trigger)
 
     useEffect(() => {
+        console.log(data)
         if (isOk && data) {
             setJwt(data?.['access']) 
             localStorage.setItem("jwt",data?.['access']) // Сохраняю данные в localStorage

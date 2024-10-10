@@ -14,9 +14,9 @@ const RegestrationPage = () => {
         <div className='content-wrapper'>
             <div className="title-wrapper">
                 <div className="title l-margin">
-                    <span className='is-clickable' onClick={() => setIsReg(true)}>Reg</span>
+                    <span className='is-clickable title' onClick={() => setIsReg(true)}>Reg</span>
                     /
-                    <span className='is-clickable' onClick={() => setIsReg(false)}>Enter</span>
+                    <span className='is-clickable title' onClick={() => setIsReg(false)}>Enter</span>
                 </div>
             </div>
             <div className="l-margin reg-form-wrapper el-center">
