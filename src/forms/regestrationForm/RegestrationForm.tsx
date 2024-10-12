@@ -6,6 +6,7 @@ import usePost from "../../shared/customHooks/usePost";
 
 
 import './ui/regestrationForm.css'
+import LoadingItem from "../../shared/ui/loadingItem/loadingitem";
 
 const RegestrationForm = () => {
 
@@ -31,9 +32,10 @@ const RegestrationForm = () => {
 
     return (
         <>
-
             <div>
             {isOk && <div className="title text-center">Created!</div>}
+            {loading && <LoadingItem/>}
+            {error && <div>{error}</div>}
                 <ReactiveForm setFunc={setForm} setObject={form}>
                     <div className="input-wrapper">
                         {!form.username.isValid && <div className="error-text"><strong>Имя некорректно</strong></div> }

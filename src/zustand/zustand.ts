@@ -16,6 +16,7 @@ interface useDataStore {
     localDeletedMessages:any, // Локально удаленные сообщения которые хранятся в виде {id:amountOfDeleted:number}
     deletedMessages: number[], // айдишники удаленных комментариев, чтоб не перефетчивать и не вызывать рендер
     // сохраняю их в списке а потом по фильртации вывожу, ну или же нет
+    hasAnswers: {[x:string]:boolean},
     deletedAnswers: any,
     setIsAnswer: (newAnswerTo:string,newUserName:string) => void, // Установка элементов для определния ответ это или же нет
     setNullAnswer: () => void, // Отмена элементов определения ответ это или же нет
@@ -24,6 +25,7 @@ interface useDataStore {
     setDeletedMessages: (id:number) => void, // Сохраняет локально удаленные комментарии, а точнее их айдишники
     removeCreatedAnswer: (id:number) => void, // Удаляет локально созданный комментарий
     setLocalDeletedMessages: (deletedAnswer:CommentType,isLocal:boolean) => void, // Сохраняет кол-во удаленных локальных сообщений
+    setHasAnswers: (isHasAnswers:boolean,id:string) => void
 }
 
 const useJwtStore =  create((set) => ({
@@ -37,8 +39,17 @@ const useDataStore = create<useDataStore>((set) => ({
     answerTo: false,
     username: false,
     isAnswer: false,
+
     isChanged: false,
+
     deletedAnswers:{},
+
+    hasAnswers: {},
+    setHasAnswers: (isHasAnswers:boolean,id:string) => set((state) => {
+       const newObject = {...state.hasAnswers}
+       newObject[id] = isHasAnswers
+       return {hasAnswers:newObject}
+    }),
 
     setLocalDeletedMessages: (answerTo:number) => set((state) => {
         const objectToSave = {...state.localDeletedMessages}
@@ -53,7 +64,7 @@ const useDataStore = create<useDataStore>((set) => ({
         
     }),
     setDeletedMessages: (id) => set((state) => ({ deletedMessages: [...state.deletedMessages, id] })),
-    setIsChanged: () => set((state) => ({ isChanged: !state.isChanged })),
+    setIsChanged: () => set((state) => ({ isChanged: !state.isChanged,prevIsChanged:state.isChanged })),
     
     setIsAnswer: (newAnswerTo: string, newUserName?: string) => 
         set({ answerTo: newAnswerTo, username: newUserName, isAnswer: true }),

@@ -12,7 +12,6 @@ import './ui/commentariesPage.css';
 const CommentariesPage = () => {
 
     const isChanged = useDataStore((state) => state.isChanged);
-
     const [page, setPage] = useState<number>(1);
     const [data, setData] = useState<any | []>();
     const comments = useFetch("https://dzen-code-server-32421357bff6.herokuapp.com/message/?page=" + page, [isChanged]);

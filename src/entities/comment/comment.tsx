@@ -1,7 +1,6 @@
 import { useState, useCallback, useEffect } from 'react';
 import { FC } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
 
 import { CommentType } from './api/commentarType';
 import { useDataStore, useJwtStore } from '../../zustand/zustand';
@@ -12,7 +11,7 @@ import safeAdd from '../../shared/Functions/saveAdd';
 
 import './ui/comment.css';
 
-// Я взял инстаграмовскую модель поведения комментариев, т.к в ТЗ определение комментариев было одним предложением + скринов - всё
+// Я взял инстаграмовскую модель поведения комментариев, т.к в ТЗ определение комментариев было одним предложением + скрином - всё
 // Надеюсь вы поймёте, почему я не захотел вас доставать лишними вопросами)
 // Если сравнить модель поведения инстаграмм комментариев на пк - то мои даже ведут лучше (Нет локального дубликата), хоть это и далось мне толькьо на последний день xD
 
@@ -31,20 +30,20 @@ const Comment: FC<CommentType> = (props) => {
     // Если 0 - False соотвтетсвенно нет кнопок открытия закрытия и не выводятся никакие элементы.
     // если > 0 - True - появляются кнопки открытия закрытия и т.д
 
-    const [amountOfDeletedEl,setAmountOfDeletedEl] = useState<number>(0)
-    
+    const [amountOfDeletedEl,setAmountOfDeletedEl] = useState<number>(0) // Подсчитывает кол-во удаленных элементов
+
+    const isChanged = useDataStore((state) => state.isChanged);
+
     const jwt = useJwtStore((state: any) => state.jwt); // jwt
 
     const createdAnswers = useDataStore((state: any) => state.createdAnswers);// Локально созданные экземпляры, которые имеют атрибут isLocal:true
-    const removeCreatedAnswer = useDataStore((state) => state.removeCreatedAnswer) // удалений локально-созданного экземпляра
+    const removeCreatedAnswer = useDataStore((state) => state.removeCreatedAnswer) // удаление локально-созданного экземпляра
 
     const setIsAnswer = useDataStore((state: any) => state.setIsAnswer); // Сохраняет ID комментария к которому захотели оставить ответ 
 
     const setDeletedMessages = useDataStore((state:any) => state.setDeletedMessages) // сохраняет айдишник удаленных комментариев для избежания коллизий и дубликаций
 
     const deletedMessages = useDataStore((state) => state.deletedMessages) // список удаленных айдишников
-
-
     const { deleteItem, loading, error, success } = useDelete('https://dzen-code-server-32421357bff6.herokuapp.com/message/'); // Кастомный хук для удаления
 
     // Загрузка ответов на комментарии
@@ -99,10 +98,14 @@ const Comment: FC<CommentType> = (props) => {
 
     useEffect(() => {
         // Если кол-во активных комментариев больше чем серверные + локальные - значит все загруженные а дальше идут лишь дубликаты локально созданных
-        if (amountOfRealAnswers >= props.amountOfAnswers + createdAnswers[props.id]?.length){ 
-            setAllLoaded(true) // Если кол-во активных 
-        }
-    },[amountOfRealAnswers])
+        if((amountOfRealAnswers - createdAnswers[props.id]?.length) * -1 == props.amountOfAnswers){ // сихронизация локально-созданных комментариев (могут быть новые баги)
+            setAllLoaded(true)
+        }else { 
+            if (amountOfRealAnswers >= props.amountOfAnswers + createdAnswers[props.id]?.length) { // Проверка на дубликаты
+                setAllLoaded(true) 
+            }
+        }   
+    },[amountOfRealAnswers,isChanged])
 
     useEffect(() => {
         if(success){ // success -> Показывает успешо ли был удален комментарий
@@ -147,14 +150,15 @@ const Comment: FC<CommentType> = (props) => {
                 </div>
     
                 <div className="text-section semi-border">
-                    <div className="text-wrapper s-margin">{props.text}</div>
+                    <div className="text-wrapper s-margin" dangerouslySetInnerHTML={{ __html: props.text }}></div>
                 </div>
     
                 <div className="comment-btns btn is-clickable">
                     <div className="default-btn semi-border make-answer-btn" onClick={handleOnMakeAnswer}>
                         Відповісти
                     </div>
-                    {props.file && <Link to={props.file}><div>Подивитись вложене</div></Link>}
+                    {props.file && <a href={props.file} target='_blank'><div>Подивитись вложене</div></a>}
+                    {!allLoaded && <>bruh</>}
                 </div>
     
                 
@@ -183,17 +187,17 @@ const Comment: FC<CommentType> = (props) => {
                     ))}
                 </AnimatePresence>
     
-                {props.hasAnswers && !allLoaded && !(amountOfRealAnswers > props.amountOfAnswers) &&
+                {props.hasAnswers && !allLoaded &&
                 <div className='default-btn s-margin' onClick={handleOnLoadAnswers}>
                     Загрузити коментарі
                 </div>}
                 {Boolean(amountOfRealAnswers) && !props.isAnswer && <>
                     {showAnswers && 
-                    <div className='default-btn s-margin' onClick={() => setShowAnswers(!showAnswers)}>
+                    <div className='default-btn s-margin' onClick={() => setShowAnswers(false)}>
                         Закрити коментарі
                     </div>}
-                    {!showAnswers && allLoaded &&
-                    <div className='default-btn s-margin' onClick={() => setShowAnswers(!showAnswers)}>
+                    {!showAnswers &&
+                    <div className='default-btn s-margin' onClick={() => setShowAnswers(true)}>
                         Відкрити коментарі
                     </div>}
                 </>}

@@ -76,6 +76,8 @@ const CommentForm = () => {
     useActionOnSubmit(async () => { // Это кастомный хук - подобие useEffect он отрабатывает когда изменяется globalObject на данный момент это form
         // в дальнейшем useActionOnSubmit и FormIsValid будут одним целым (Но это уменьшит гибкость :( )
         if(formIsValid(form)){ // FormIsValid -> Проверяет являются ли все значения в form валидными
+            setFile('')
+            rawSetter(setForm,'file','',true)
             let urlLink = null;
             if (form['file'].value){ // Если есть file -> гружу его в облачное хранилище
                 urlLink = await downloadFileTo(form['file'].value,'files/')

@@ -49,6 +49,8 @@ const EnterForm = () => {
     return (
         <>  
             {loading && <LoadingItem />}  
+            <div>
+            {error && <div className="text-center">{error}</div>}
             <ReactiveForm setFunc={setForm} setObject={form}>
                 <div className="input-wrapper">
                     {!form.username.isValid && <div className="error-text"><strong>Логин некорректен</strong></div> }
@@ -71,6 +73,7 @@ const EnterForm = () => {
                     Enter
                 </div>
             </ReactiveForm>
+            </div>
         </>
     )
 }
